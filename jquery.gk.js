@@ -228,7 +228,9 @@
     components: {"WebComponent": WebComponent},
     createTag: function (tages) {
       for (var i in tages) {
-        TagUtils.createElement(tages[i].replace(/\S*\//g, ''));
+        if (tages.hasOwnProperty(i)) {
+          TagUtils.createElement(tages[i].replace(/\S*\//g, ''));
+        }
       }
     },
     init: function () {
@@ -248,6 +250,7 @@
       if (name == null || typeof name !== "string") {
         return;
       }
+      TagUtils.createElement(name.replace(/\S*\//g, ''));
       var clazz, htmlStr;
       if (typeof exec === "function") {
         clazz = exec();
