@@ -128,14 +128,18 @@
       CustomTag.tag[id] = $(processTagElement).clone().wrap("<div></div>").parent().html().trim();
       newHTML = newHTML.replace(TagLibrary.content, repHTML);
       newHTML = $.gk.components[tagName].prototype['beforeParse'](newHTML);
-      var onEvent = [], attrs = {};
+      var onEvent = [], attrs = {}, noMatch = {};
       $.each(processTagElement.attributes, function (idx, att) {
         if (att.nodeName.indexOf('on') == 0) {
           onEvent.push([att.nodeName, att.nodeValue]);
         }
         attrs[att.nodeName] = att.nodeValue;
         var regex = new RegExp('{{' + att.nodeName + '}}', "gi");
-        newHTML = newHTML.replace(regex, att.nodeValue);
+        if (newHTML.match(regex) !== null) {
+          newHTML = newHTML.replace(regex, att.nodeValue);
+        } else {
+          noMatch[att.nodeName] = att.nodeValue
+        }
       });
       newNode = TagUtils.toElement(newHTML);
       $newNode = $(newNode);
@@ -144,6 +148,11 @@
       });
       $.each(attrs, function (key, value) {
         $newNode.data(CustomTag.PREFIX + key, value);
+      });
+      $.each(noMatch, function(key, value) {
+        if (typeof($newNode.attr(key)) === 'undefined' && /is/.test(key) === false) {
+          $newNode.attr(key, value);
+        }
       });
       $newNode.addClass('gk-component-'+clazz.toLowerCase());
       TagUtils.replaceElement(processTagElement, newNode);
