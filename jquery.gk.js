@@ -37,6 +37,14 @@
         }
       }
     };
+    proto.destroy = function () {
+      delete CustomTag.tag[this.id];
+      this.id = null;
+      this.$originEle = null;
+      this.$ele.removeData();
+      this.$ele.unbind();
+      this.$ele = null;
+    };
     return WebComponent;
   })();
 
@@ -199,7 +207,10 @@
         var html = $ele.html();
         html = $ele.prop("tagName") === 'BODY' ?
             html.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '') : html;
-        $ele.html($.gk.toHTML(html));
+        var htmlp = $.gk.toHTML(html);
+        if (htmlp !== html) {
+          $ele.html(htmlp);
+        }
       });
     };
     TagLibrary.process = function process(ele) {
@@ -234,6 +245,10 @@
 
   $.gk = {
     version: "0.6",
+    __inner: {
+      'TagLibrary': TagLibrary,
+      'CustomTag': CustomTag
+    },
     components: {"WebComponent": WebComponent},
     createTag: function (tages) {
       for (var i in tages) {
