@@ -7,8 +7,7 @@
   "main": "jquery.gk.min.js",
   "keywords": [
     "jquery",
-    "gk",
-    "web-components"
+    "gk"
   ],
   "license": "MIT",
   "homepage": "http://www.ezoui.com/",
